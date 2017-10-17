@@ -8,6 +8,7 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+/* GET picture from NASA */
 router.get('/fetch_picture', function (req, res, next) {
 
     console.log('RANDOM? ' + req.query.random);
