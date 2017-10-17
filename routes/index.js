@@ -11,6 +11,7 @@ router.get('/', function(req, res, next) {
 /* GET picture from NASA */
 router.get('/fetch_picture', function (req, res, next) {
 
+    /*Error*/
     console.log('RANDOM? ' + req.query.random);
       apod(function (err, apod_data) {
          if (err) {
