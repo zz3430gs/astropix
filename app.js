@@ -5,9 +5,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var hbs = require('hbs');
+var session = require('express-session');
+var MongoDBStore = require('connect-mongodb-session')(session);
 
 var index = require('./routes/index');
-
+var favorites = require('./routes/favorites');
 
 var app = express();
 
@@ -24,7 +26,25 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var mongo_url = process.env.MONGO_URL;
+
+//configure session store. Remember to configure DB url for this app's database
+var store = new MongoDBStore({ uri: mongo_url, collection: 'sessions'}, function (err) {
+    if (err){
+      console.log("Error, can't connect to MongoDB to store sessions");
+    }
+});
+
+//configure sessions
+app.use(session({
+    secret: 'top secret!',
+    resave: true,
+    saveUninitialized: true,
+    store: store
+}));
+
 app.use('/', index);
+app.use('/favorites', favorites);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
